@@ -1,12 +1,12 @@
 const express = require("express");
 const cors = require("cors"); // Import the cors package
 const connectDB = require("./connection"); // Import the connection function
+const packagesRouter = require("./routes/apiRoutes"); // Adjust the path if needed
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
-connectDB();
 
 // Middleware
 app.use(express.json());
@@ -20,7 +20,7 @@ app.use(
   })
 );
 
-// Example route to test API
+app.use("/api", packagesRouter); // Prefix all routes with /api// Example route to test API
 app.get("/", (req, res) => {
   res.send("API is running...");
 });

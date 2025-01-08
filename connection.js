@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Connection URL (replace with your own if using MongoDB Atlas)
-const mongoURI = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/<database>?retryWrites=true&w=majority';
+const mongoURI = 'mongodb+srv://karimwahba63:iphone11K@cluster0.2fwrv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 // Connect to MongoDB
 const connectDB = async () => {

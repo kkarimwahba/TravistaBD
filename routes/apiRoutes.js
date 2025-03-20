@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { listPackages } = require("../controllers/packagesController");
 
-// Define routes
-router.get("/packages", listPackages); // Example route to get all packages
+// Route to get the packages
+router.get("/packages", listPackages);
+router.post("/packages", listPackages); // Use POST if that's the expected method
 
 module.exports = router;

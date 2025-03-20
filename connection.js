@@ -1,7 +1,8 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // Connection URL (replace with your own if using MongoDB Atlas)
-const mongoURI = 'mongodb+srv://karimwahba63:iphone11K@cluster0.2fwrv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const mongoURI =
+  "mongodb+srv://karimwahba63:iphone11K@cluster0.2fwrv.mongodb.net/travista?retryWrites=true&w=majority&appName=Cluster0";
 
 // Connect to MongoDB
 const connectDB = async () => {
@@ -10,9 +11,9 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log('MongoDB Connected');
+    console.log("MongoDB Connected");
   } catch (err) {
-    console.error('Error connecting to MongoDB:', err.message);
+    console.error("Error connecting to MongoDB:", err.message);
     process.exit(1);
   }
 };

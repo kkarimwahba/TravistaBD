@@ -5,6 +5,7 @@ const connectDB = require("./connection"); // Import the connection function
 const packagesRouter = require("./routes/apiRoutes"); // Adjust the path if needed
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const visaLeadRoutes = require("./routes/visaleadRoutes");
 const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,6 +31,7 @@ app.use("/api", packagesRouter); // Prefix all routes with /api// Example route 
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
+app.use("/api/visa-leads", visaLeadRoutes);
 
 // Start the server
 app.listen(PORT, () => {

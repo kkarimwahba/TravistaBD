@@ -16,10 +16,14 @@ const getUserById = async (req, res) => {
 // Update user
 const updateUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { firstName, lastName, email, password, phoneNumber, birthDate } =
+      req.body;
 
     let updateFields = {};
-    if (name) updateFields.name = name;
+    if (firstName) updateFields.firstName = firstName;
+    if (lastName) updateFields.lastName = lastName;
+    if (phoneNumber) updateFields.phoneNumber = phoneNumber;
+    if (birthDate) updateFields.birthDate = birthDate;
     if (email) updateFields.email = email;
     if (password) {
       updateFields.password = await bcrypt.hash(password, 10);
@@ -107,11 +111,50 @@ const logoutUser = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user)
+      return res.status(400).json({ message: "Invalid email or password" });
+
+    // Compare password
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid email or password" });
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d", // 7-day session
+      }
+    );
+
+    // Send token & user data in response
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 module.exports = {
   getUserById,
   updateUser,
   deleteUser,
   loginWithSession,
   logoutUser,
+  loginUser,
 };

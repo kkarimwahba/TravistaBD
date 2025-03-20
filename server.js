@@ -5,6 +5,7 @@ const connectDB = require("./connection"); // Import the connection function
 const packagesRouter = require("./routes/apiRoutes"); // Adjust the path if needed
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 // Middleware
 app.use(express.json());
+app.use(cookieParser()); // ✅ Enable parsing cookies
 
 // Enable CORS for all origins (or configure specific origins)
 app.use(

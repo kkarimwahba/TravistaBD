@@ -1,7 +1,9 @@
 const jwt = require("jsonwebtoken");
 
 const authMiddleware = (req, res, next) => {
-  const token = req.cookies.sessionToken; // Extract token from cookies
+  const token =
+    req.cookies.sessionToken || // Extract token from cookies
+    req.headers.authorization?.split(" ")[1]; // Extract token from header
 
   if (!token) {
     return res

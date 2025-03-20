@@ -10,7 +10,7 @@ const authMiddleware = require("../middleware/authMiddleware"); // Protect route
 
 const router = express.Router();
 
-router.post("/", authMiddleware, createCity); // Create a city
+router.post("/", createCity); // Create a city
 router.get("/", getAllCities); // Get all cities
 router.get("/:id", getCityById); // Get a single city
 router.put("/:id", updateCity); // Update a city

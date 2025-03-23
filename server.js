@@ -12,6 +12,8 @@ const hotelRoutes = require("./routes/hotelRoutes");
 const newsletterRoutes = require("./routes/newsletterRoutes");
 const faqsRoutes = require("./routes/faqsRoutes");
 const SocialMedia = require("./routes/socialMediaRoutes");
+const formLeadRoutes = require("./routes/formLeadRoutes");
+const articlesRoutes = require("./routes/articleRoutes");
 const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,6 +41,8 @@ app.use("/api/hotels", hotelRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/faqs", faqsRoutes);
 app.use("/api/social-media", SocialMedia);
+app.use("/api/form-lead", formLeadRoutes);
+app.use("/api/articles", articlesRoutes);
 app.use("/api", packagesRouter); // Prefix all routes with /api// Example route to test API
 app.get("/", (req, res) => {
   res.send("API is running...");

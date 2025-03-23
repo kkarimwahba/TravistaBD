@@ -1,93 +1,135 @@
 const VisaLead = require("../models/visalead");
 
-// Create a new visa lead
-exports.createVisaLead = async (req, res) => {
+// Create a new visa application
+exports.createVisaApplication = async (req, res) => {
   try {
     const {
       userId,
-      country,
       firstName,
       lastName,
-      countryCode,
       phoneNumber,
+      country,
+      purpose,
+      invitation,
+      schengenBefore,
+      travelDate,
+      jobStatus,
+      visaRenewal,
       agreedToTerms,
     } = req.body;
 
-    if (!userId) {
-      return res.status(400).json({ message: "User ID is required" });
+    const userIdToUse = userId ? userId : null;
+
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ message: "Bank statement file is required" });
     }
 
-    const newLead = new VisaLead({
-      userId,
-      country,
+    const bankStatement = req.file.path; // Get uploaded file path
+
+    const newApplication = new VisaLead({
+      userId: userIdToUse,
       firstName,
       lastName,
-      countryCode,
       phoneNumber,
+      country,
+      purpose,
+      invitation,
+      schengenBefore,
+      travelDate,
+      jobStatus,
+      visaRenewal,
+      bankStatement,
       agreedToTerms,
     });
 
-    await newLead.save();
-    res.status(201).json(newLead);
+    await newApplication.save();
+    res.status(201).json({
+      message: "Visa application submitted successfully",
+      data: newApplication,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-// Get all visa leads
-exports.getVisaLeads = async (req, res) => {
-  try {
-    const leads = await VisaLead.find();
-    res.status(200).json(leads);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Error submitting application", error });
   }
 };
 
-exports.getVisaLeadsByUser = async (req, res) => {
+// Get all visa applications
+exports.getAllVisaApplications = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const leads = await VisaLead.find({ userId });
-    res.status(200).json(leads);
+    const applications = await VisaLead.find().populate("userId", "name email");
+    res.status(200).json(applications);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Error fetching applications", error });
   }
 };
 
-// Get a single visa lead by ID
-exports.getVisaLeadById = async (req, res) => {
+// Get a single visa application by ID
+exports.getVisaApplicationById = async (req, res) => {
   try {
-    const lead = await VisaLead.findById(req.params.id);
-    if (!lead) return res.status(404).json({ message: "Lead not found" });
-    res.status(200).json(lead);
+    const application = await VisaLead.findById(req.params.id).populate(
+      "userId",
+      "name email"
+    );
+    if (!application)
+      return res.status(404).json({ message: "Application not found" });
+
+    res.status(200).json(application);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Error fetching application", error });
   }
 };
 
-// Update a visa lead
-exports.updateVisaLead = async (req, res) => {
+// Get visa applications by user ID
+exports.getVisaApplicationsByUser = async (req, res) => {
   try {
-    const updatedLead = await VisaLead.findByIdAndUpdate(
+    const applications = await VisaLead.find({
+      userId: req.params.userId,
+    }).populate("userId", "name email");
+
+    if (!applications.length) {
+      return res
+        .status(404)
+        .json({ message: "No applications found for this user" });
+    }
+
+    res.status(200).json(applications);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching applications", error });
+  }
+};
+
+// Update a visa application
+exports.updateVisaApplication = async (req, res) => {
+  try {
+    const updatedApplication = await VisaLead.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
     );
-    if (!updatedLead)
-      return res.status(404).json({ message: "Lead not found" });
-    res.status(200).json(updatedLead);
+
+    if (!updatedApplication)
+      return res.status(404).json({ message: "Application not found" });
+
+    res.status(200).json({
+      message: "Application updated successfully",
+      data: updatedApplication,
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ message: "Error updating application", error });
   }
 };
 
-// Delete a visa lead
-exports.deleteVisaLead = async (req, res) => {
+// Delete a visa application
+exports.deleteVisaApplication = async (req, res) => {
   try {
-    const deletedLead = await VisaLead.findByIdAndDelete(req.params.id);
-    if (!deletedLead)
-      return res.status(404).json({ message: "Lead not found" });
-    res.status(200).json({ message: "Lead deleted successfully" });
+    const deletedApplication = await VisaLead.findByIdAndDelete(req.params.id);
+
+    if (!deletedApplication)
+      return res.status(404).json({ message: "Application not found" });
+
+    res.status(200).json({ message: "Application deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Error deleting application", error });
   }
 };

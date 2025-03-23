@@ -5,7 +5,11 @@ const citySchema = new mongoose.Schema(
   {
     cityId: { type: Number, unique: true }, // Auto-incrementing ID
     name: { type: String, required: true, unique: true },
-    country: { type: String, required: true },
+    country: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Country",
+      required: true,
+    }, // Reference to Country
   },
   { timestamps: true }
 );

@@ -14,19 +14,12 @@ exports.createVisaApplication = async (req, res) => {
       schengenBefore,
       travelDate,
       jobStatus,
+      bankStatement,
       visaRenewal,
       agreedToTerms,
     } = req.body;
 
     const userIdToUse = userId ? userId : null;
-
-    if (!req.file) {
-      return res
-        .status(400)
-        .json({ message: "Bank statement file is required" });
-    }
-
-    const bankStatement = req.file.path; // Get uploaded file path
 
     const newApplication = new VisaLead({
       userId: userIdToUse,

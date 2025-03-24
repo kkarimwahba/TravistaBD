@@ -32,9 +32,8 @@ const createCity = async (req, res) => {
 // 📌 Get All Cities (Populated with Country Info)
 const getAllCities = async (req, res) => {
   try {
-    const cities = await City.find()
-      .populate("country", "name code")
-      .sort({ cityId: 1 });
+    const cities = await City.find().populate("country", "name code"); // Populate with name & code
+
     res.status(200).json(cities);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch cities", error });
@@ -44,7 +43,7 @@ const getAllCities = async (req, res) => {
 // 📌 Get Single City by ID (Populated with Country Info)
 const getCityById = async (req, res) => {
   try {
-    const city = await City.findOne({ cityId: req.params.id }).populate(
+    const city = await City.findById(req.params.id).populate(
       "country",
       "name code"
     );
@@ -68,11 +67,12 @@ const updateCity = async (req, res) => {
         return res.status(404).json({ message: "Country not found" });
     }
 
-    const updatedCity = await City.findOneAndUpdate(
-      { cityId: req.params.id },
+    const updatedCity = await City.findByIdAndUpdate(
+      req.params.id, // ✅ Fixed incorrect field
       req.body,
       { new: true }
     ).populate("country", "name code");
+
     if (!updatedCity)
       return res.status(404).json({ message: "City not found" });
 
@@ -94,6 +94,7 @@ const deleteCity = async (req, res) => {
     res.status(500).json({ message: "Failed to delete city", error });
   }
 };
+
 // 📌 Get Cities by Country ID
 const getCitiesByCountry = async (req, res) => {
   try {

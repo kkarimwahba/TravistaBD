@@ -1,8 +1,52 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors"); // Import the cors package
-const connectDB = require("./connection"); // Import the connection function
-const packagesRouter = require("./routes/apiRoutes"); // Adjust the path if needed
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const cors = require("cors");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+
+const connectDB = require("./connection");
+
+// App and Port
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Connect to MongoDB
+connectDB();
+
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+  })
+);
+
+// Session middleware
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET, // Your session secret
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI, // Your MongoDB URI
+    }),
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true for HTTPS in production
+      maxAge: 1000 * 60 * 60 * 24, // Cookie expiration time (1 day)
+    },
+  })
+);
+
+// All routes
+const packagesRouter = require("./routes/apiRoutes");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const citiesRoutes = require("./routes/citiesRoutes");
@@ -15,25 +59,12 @@ const SocialMedia = require("./routes/socialMediaRoutes");
 const formLeadRoutes = require("./routes/formLeadRoutes");
 const articlesRoutes = require("./routes/articleRoutes");
 const countriesRoutes = require("./routes/countryRoutes");
-const cookieParser = require("cookie-parser");
-const app = express();
-const PORT = process.env.PORT || 5000;
+const heroRoutes = require("./routes/heroRoutes");
 
-// Connect to MongoDB
-connectDB();
-// Middleware
-app.use(express.json());
-app.use(cookieParser()); // ✅ Enable parsing cookies
+const empAuthRoutes = require("./routes/empAuthRoutes");
+const employeeRoutes = require("./routes/employeeRoutes");
 
-// Enable CORS for all origins (or configure specific origins)
-app.use(
-  cors({
-    origin: "http://localhost:3000", // Frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-    credentials: true, // Enable cookies or authorization headers if needed
-  })
-);
-
+// Register routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/cities", citiesRoutes);
@@ -45,13 +76,18 @@ app.use("/api/social-media", SocialMedia);
 app.use("/api/form-lead", formLeadRoutes);
 app.use("/api/articles", articlesRoutes);
 app.use("/api/countries", countriesRoutes);
-app.use("/api", packagesRouter); // Prefix all routes with /api// Example route to test API
+app.use("/api/empauth", empAuthRoutes);
+app.use("/api/employees", employeeRoutes);
+app.use("/api/hero", heroRoutes);
+app.use("/api", packagesRouter);
+app.use("/api/visa-leads", visaLeadRoutes);
+
+// Root route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
-app.use("/api/visa-leads", visaLeadRoutes);
 
-// Start the server
+// Start server
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`✅ Server is running on port ${PORT}`);
 });

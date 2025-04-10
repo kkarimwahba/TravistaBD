@@ -60,6 +60,8 @@ const formLeadRoutes = require("./routes/formLeadRoutes");
 const articlesRoutes = require("./routes/articleRoutes");
 const countriesRoutes = require("./routes/countryRoutes");
 const heroRoutes = require("./routes/heroRoutes");
+const tagRoutes = require("./routes/tagRoutes");
+const blogRoutes = require("./routes/blogRoutes");
 
 const empAuthRoutes = require("./routes/empAuthRoutes");
 const employeeRoutes = require("./routes/employeeRoutes");
@@ -79,6 +81,8 @@ app.use("/api/countries", countriesRoutes);
 app.use("/api/empauth", empAuthRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/hero", heroRoutes);
+app.use("/api/tags", tagRoutes);
+app.use("/api/blog", blogRoutes);
 app.use("/api", packagesRouter);
 app.use("/api/visa-leads", visaLeadRoutes);
 

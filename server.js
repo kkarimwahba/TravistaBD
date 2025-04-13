@@ -20,7 +20,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-
 app.use(
   cors({
     origin: "http://localhost:3000", // Frontend URL
@@ -67,7 +66,9 @@ const bannerRoutes = require("./routes/bannerRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const empAuthRoutes = require("./routes/empAuthRoutes");
 const employeeRoutes = require("./routes/employeeRoutes");
-
+const packagesRoutes = require("./routes/packagesRoutes");
+const toursRoutes = require("./routes/ToursRoutes");
+const tourCategoryRoutes = require("./routes/tourCategoryRoutes");
 // Register routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -89,6 +90,8 @@ app.use("/api/tags", tagRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/banners", bannerRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/tours", toursRoutes);
+app.use("/api/tour-categories", tourCategoryRoutes);
 app.use("/api", packagesRouter);
 app.use("/api/visa-leads", visaLeadRoutes);
 

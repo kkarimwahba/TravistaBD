@@ -5,10 +5,10 @@ const MongoStore = require("connect-mongo");
 const cors = require("cors");
 const path = require("path");
 const cookieParser = require("cookie-parser");
-
 const connectDB = require("./connection");
 
 // App and Port
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -19,6 +19,7 @@ connectDB();
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 app.use(
   cors({
@@ -79,6 +80,8 @@ app.use("/api/social-media", SocialMedia);
 app.use("/api/form-lead", formLeadRoutes);
 app.use("/api/articles", articlesRoutes);
 app.use("/api/countries", countriesRoutes);
+app.use("/api/packages", packagesRoutes); // Add the packages routes
+app.use("/api/visa-leads", visaLeadRoutes);
 app.use("/api/empauth", empAuthRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/hero", heroRoutes);

@@ -1,52 +1,127 @@
 // controllers/packagesController.js
-const axios = require("axios");
+const Package = require("../models/packages");
 
-// Controller function to fetch packages from Odoo API
-const listPackages = async (req, res) => {
+// Create a new package
+const createPackage = async (req, res) => {
   try {
-    // Make a POST request to the Odoo API
-    const response = await axios.post(
-      "http://82.129.226.164:8069/api/list_crm_pacakge",
-      {
-        // If the API expects a request body, include it here
-        // For example, if the API requires some data like an ID or filter
-        // data: req.body  // Uncomment this if you are passing data from the request
-      },
-      {
-        headers: {
-          Authorization: "Bearer YOUR_ACCESS_TOKEN", // Replace with your actual token
-          "Content-Type": "application/json", // Adjust if needed by the API
-        },
-      }
-    );
+    const parsedData = JSON.parse(req.body.packageData);
 
-    // Return the fetched data as a JSON response
-    return res.status(200).json(response.data);
+    const {
+      travistaID,
+      departureDate,
+      destinations,
+      totalDays,
+      totalNights,
+      generalNotes,
+      packagePrice,
+      flights,
+      hotels,
+      includes,
+      excludes,
+    } = parsedData;
+
+    const packagePicture = req.files?.packagePicture?.[0]?.path || null;
+    const pdfDocument = req.files?.pdfDocument?.[0]?.path || null;
+
+    const newPackage = new Package({
+      travistaID,
+      departureDate,
+      destinations,
+      totalDays,
+      totalNights,
+      generalNotes,
+      packagePrice,
+      flights,
+      hotels,
+      includes,
+      excludes,
+      packagePicture,
+      pdfDocument,
+    });
+
+    const savedPackage = await newPackage.save();
+    res.status(201).json(savedPackage);
   } catch (error) {
-    // Log detailed error information
-    console.error("Error details:", error);
-
-    // Check if the error is due to a network or server issue
-    if (error.response) {
-      // The server responded with a status other than 200
-      console.error("Error response data:", error.response.data);
-      console.error("Error response status:", error.response.status);
-      console.error("Error response headers:", error.response.headers);
-      return res
-        .status(error.response.status)
-        .json({ error: error.response.data });
-    } else if (error.request) {
-      // The request was made but no response was received
-      console.error("Error request:", error.request);
-      return res.status(500).json({ error: "No response from Odoo API" });
-    } else {
-      // Something went wrong in setting up the request
-      console.error("Error message:", error.message);
-      return res
-        .status(500)
-        .json({ error: "Error in making request to Odoo API" });
-    }
+    res.status(400).json({ message: error.message });
   }
 };
 
-module.exports = { listPackages };
+// Get all packages
+const getPackages = async (req, res) => {
+  try {
+    const packages = await Package.find();
+    res.status(200).json(packages);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get a single package by ID
+const getPackageById = async (req, res) => {
+  try {
+    const packageData = await Package.findById(req.params.id);
+    if (!packageData) {
+      return res.status(404).json({ message: "Package not found" });
+    }
+    res.status(200).json(packageData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Update a package
+const updatePackage = async (req, res) => {
+  try {
+    let packageData;
+
+    // Check if packageData is coming as JSON string in FormData
+    if (req.body.packageData) {
+      packageData = JSON.parse(req.body.packageData);
+    } else {
+      packageData = req.body;
+    }
+
+    // Handle file uploads if they exist
+    if (req.file) {
+      packageData.packagePicture = req.file.path; // or your file handling logic
+    }
+
+    const updatedPackage = await Package.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...packageData,
+        updatedAt: Date.now(),
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedPackage) {
+      return res.status(404).json({ message: "Package not found" });
+    }
+    res.status(200).json(updatedPackage);
+  } catch (error) {
+    console.error("Error updating package:", error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Delete a package
+const deletePackage = async (req, res) => {
+  try {
+    const deletedPackage = await Package.findByIdAndDelete(req.params.id);
+    if (!deletedPackage) {
+      return res.status(404).json({ message: "Package not found" });
+    }
+    res.status(200).json({ message: "Package deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  createPackage,
+  getPackages,
+  getPackageById,
+  updatePackage,
+  deletePackage,
+};

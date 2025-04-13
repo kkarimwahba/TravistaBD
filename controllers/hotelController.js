@@ -9,6 +9,7 @@ const createHotel = async (req, res) => {
       .status(201)
       .json({ message: "Hotel added successfully", hotel: newHotel });
   } catch (error) {
+    console.error("Hotel creation error:", error);
     res.status(500).json({ message: "Failed to add hotel", error });
   }
 };

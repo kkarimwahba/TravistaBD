@@ -98,6 +98,15 @@ const packageSchema = new mongoose.Schema({
   pdfDocument: {
     type: String,
   },
+  // ✅ New fields here
+  isActive: {
+    type: Boolean,
+    default: true, // you can set it to false if you prefer
+  },
+  tour: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Tour", // Make sure you have a "Tour" model
+  },
   createdAt: {
     type: Date,
     default: Date.now,

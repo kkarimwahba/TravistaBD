@@ -18,6 +18,8 @@ const createPackage = async (req, res) => {
       hotels,
       includes,
       excludes,
+      isActive,
+      tour,
     } = parsedData;
 
     const packagePicture = req.files?.packagePicture?.[0]?.path || null;
@@ -37,6 +39,8 @@ const createPackage = async (req, res) => {
       excludes,
       packagePicture,
       pdfDocument,
+      isActive: typeof isActive === "boolean" ? isActive : true, // default to true
+      tour: tour || null,
     });
 
     const savedPackage = await newPackage.save();
@@ -117,6 +121,32 @@ const deletePackage = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// Toggle package active status
+const togglePackageStatus = async (req, res) => {
+  try {
+    const packageId = req.params.id;
+
+    const foundPackage = await Package.findById(packageId);
+    if (!foundPackage) {
+      return res.status(404).json({ message: "Package not found" });
+    }
+
+    foundPackage.isActive = !foundPackage.isActive;
+    foundPackage.updatedAt = Date.now();
+
+    const updatedPackage = await foundPackage.save();
+
+    res.status(200).json({
+      message: `Package is now ${
+        updatedPackage.isActive ? "active" : "inactive"
+      }`,
+      package: updatedPackage,
+    });
+  } catch (error) {
+    console.error("Error toggling package status:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   createPackage,
@@ -124,4 +154,5 @@ module.exports = {
   getPackageById,
   updatePackage,
   deletePackage,
+  togglePackageStatus,
 };

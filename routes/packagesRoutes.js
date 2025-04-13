@@ -5,6 +5,7 @@ const {
   getPackageById,
   updatePackage,
   deletePackage,
+  togglePackageStatus,
 } = require("../controllers/packagesController");
 const upload = require("../middleware/multerSetup");
 
@@ -29,5 +30,6 @@ router.get("/:id", getPackageById);
 router.put("/:id", upload.single("packagePicture"), updatePackage);
 // Delete a package
 router.delete("/:id", deletePackage);
+router.patch("/toggle-status/:id", togglePackageStatus);
 
 module.exports = router;

@@ -7,6 +7,7 @@ const createPackage = async (req, res) => {
     const parsedData = JSON.parse(req.body.packageData);
 
     const {
+      packageName,
       travistaID,
       departureDate,
       destinations,
@@ -26,6 +27,7 @@ const createPackage = async (req, res) => {
     const pdfDocument = req.files?.pdfDocument?.[0]?.path || null;
 
     const newPackage = new Package({
+      packageName,
       travistaID,
       departureDate,
       destinations,

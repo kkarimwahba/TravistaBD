@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const packageSchema = new mongoose.Schema({
+  packageName: {
+    type: String,
+  },
   travistaID: {
     type: String,
     index: false,

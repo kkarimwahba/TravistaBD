@@ -150,7 +150,14 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+// GET /api/users
+const getUsers = async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+};
+
 module.exports = {
+  getUsers,
   getUserById,
   updateUser,
   deleteUser,

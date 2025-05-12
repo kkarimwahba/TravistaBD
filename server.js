@@ -99,7 +99,7 @@ app.use("/api/visa-documents", visaDocumentRoutes);
 app.use("/api", packagesRouter);
 app.use("/api/visa-leads", visaLeadRoutes);
 
-// Root route
+// Root routess
 app.get("/", (req, res) => {
   res.send("API is running...");
 });

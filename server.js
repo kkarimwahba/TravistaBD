@@ -22,7 +22,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(
   cors({
-    origin: "http://localhost:3000", // Frontend URL
+    origin: "https://travista.vercel.app", // Frontend URL
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
@@ -39,7 +39,7 @@ app.use(
     }),
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true for HTTPS in production
+      secure: false, //process.env.NODE_ENV === "production", // true for HTTPS in production
       maxAge: 1000 * 60 * 60 * 24, // Cookie expiration time (1 day)
     },
   })

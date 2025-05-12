@@ -110,6 +110,9 @@ const packageSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Tour", // Make sure you have a "Tour" model
   },
+  type: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

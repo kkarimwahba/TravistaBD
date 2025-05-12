@@ -19,6 +19,7 @@ const createPackage = async (req, res) => {
       hotels,
       includes,
       excludes,
+      type,
       isActive,
       tour,
     } = parsedData;
@@ -39,6 +40,7 @@ const createPackage = async (req, res) => {
       hotels,
       includes,
       excludes,
+      type,
       packagePicture,
       pdfDocument,
       isActive: typeof isActive === "boolean" ? isActive : true, // default to true

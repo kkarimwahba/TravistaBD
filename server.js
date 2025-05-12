@@ -10,7 +10,7 @@ const connectDB = require("./connection");
 // App and Port
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
 connectDB();
@@ -22,7 +22,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(
   cors({
-    origin: "https://travista.vercel.app", // Frontend URL
+    origin: "http://localhost:3000", // Frontend URL
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
@@ -39,7 +39,7 @@ app.use(
     }),
     cookie: {
       httpOnly: true,
-      secure: false, //process.env.NODE_ENV === "production", // true for HTTPS in production
+      secure: process.env.NODE_ENV === "production", // true for HTTPS in production
       maxAge: 1000 * 60 * 60 * 24, // Cookie expiration time (1 day)
     },
   })
@@ -106,5 +106,5 @@ app.get("/", (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
+  console.log(`✅ Development Server is running on port ${PORT}`);
 });

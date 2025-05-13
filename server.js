@@ -71,6 +71,8 @@ const toursRoutes = require("./routes/ToursRoutes");
 const tourCategoryRoutes = require("./routes/tourCategoryRoutes");
 const applyForPackageRoutes = require("./routes/applyForPackageRoutes");
 const visaDocumentRoutes = require("./routes/visaDocumentRoutes");
+const buildPackageRoutes = require("./routes/buildPackageRoutes");
+
 // Register routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -98,6 +100,7 @@ app.use("/api/applications", applyForPackageRoutes);
 app.use("/api/visa-documents", visaDocumentRoutes);
 app.use("/api", packagesRouter);
 app.use("/api/visa-leads", visaLeadRoutes);
+app.use("/api/build-packages", buildPackageRoutes);
 
 // Root routess
 app.get("/", (req, res) => {

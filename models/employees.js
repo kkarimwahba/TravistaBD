@@ -13,6 +13,7 @@ const employeeSchema = new mongoose.Schema({
     enum: ["admin", "marketingTeam", "employee"],
     required: true,
   },
+  active: { type: Boolean, default: true },
   loginTime: { type: Date },
   logoutTime: { type: Date },
   sessionDuration: { type: Number }, // in seconds

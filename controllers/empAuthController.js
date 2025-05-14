@@ -6,6 +6,13 @@ export const register = async (req, res) => {
   const { email, username, empId, name, phone, password, role } = req.body;
 
   try {
+    // Check if the request is from an admin (using middleware)
+    if (!req.session.employee || req.session.employee.role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Only admins can register new employees" });
+    }
+
     const existingEmployee = await Employee.findOne({ email });
     if (existingEmployee)
       return res.status(400).json({ message: "Employee already exists" });

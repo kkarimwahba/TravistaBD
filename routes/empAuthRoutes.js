@@ -1,11 +1,14 @@
 const express = require("express");
 const { register, login, logout } = require("../controllers/empAuthController");
-const { isAuthenticated } = require("../middleware/employeeAuthMiddleware");
+const {
+  isAuthenticated,
+  authorizeRoles,
+} = require("../middleware/employeeAuthMiddleware");
 
 const router = express.Router();
 
-// Registration route (for admin or public depending on access)
-router.post("/register", register);
+// Registration route (admin only)
+router.post("/register", isAuthenticated, authorizeRoles("admin"), register);
 
 // Login route
 router.post("/login", login);

@@ -37,3 +37,33 @@ export const deleteEmployee = async (req, res) => {
 
   res.json({ message: "Employee deleted successfully" });
 };
+
+export const toggleEmployeeStatus = async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id);
+
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    // Toggle the active status
+    employee.active = !employee.active;
+
+    await employee.save();
+
+    res.json({
+      message: `Employee status changed to ${
+        employee.active ? "active" : "inactive"
+      }`,
+      employee: {
+        _id: employee._id,
+        name: employee.name,
+        email: employee.email,
+        role: employee.role,
+        active: employee.active,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

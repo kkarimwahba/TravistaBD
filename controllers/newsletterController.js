@@ -48,6 +48,12 @@ const unsubscribeNewsletter = async (req, res) => {
     user.subscribed = false;
     await user.save();
 
+    const notification = new Notification({
+      type: "Newsletter",
+      description: `User unsubscribed from newsletter: ${user.email}`,
+    });
+    await notification.save();
+
     res.status(200).json({ message: "Unsubscribed successfully", user });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

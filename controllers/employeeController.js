@@ -13,7 +13,7 @@ export const getEmployeeById = async (req, res) => {
 };
 
 export const updateEmployee = async (req, res) => {
-  const { name, phone, username, role } = req.body;
+  const { name, phone, username, role, active } = req.body;
 
   const employee = await Employee.findByIdAndUpdate(
     req.params.id,
@@ -22,6 +22,7 @@ export const updateEmployee = async (req, res) => {
       phone,
       username,
       role,
+      active: typeof active === "boolean" ? active : undefined, // Only update if provided
     },
     { new: true, select: "-password" }
   );
@@ -36,4 +37,34 @@ export const deleteEmployee = async (req, res) => {
   if (!employee) return res.status(404).json({ message: "Employee not found" });
 
   res.json({ message: "Employee deleted successfully" });
+};
+
+export const toggleEmployeeStatus = async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id);
+
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    // Toggle the active status
+    employee.active = !employee.active;
+
+    await employee.save();
+
+    res.json({
+      message: `Employee status changed to ${
+        employee.active ? "active" : "inactive"
+      }`,
+      employee: {
+        _id: employee._id,
+        name: employee.name,
+        email: employee.email,
+        role: employee.role,
+        active: employee.active,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

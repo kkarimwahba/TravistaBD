@@ -3,7 +3,8 @@ import Employee from "../models/employees.js";
 import bcrypt from "bcrypt";
 
 export const register = async (req, res) => {
-  const { email, username, empId, name, phone, password, role } = req.body;
+  const { email, username, empId, name, phone, password, role, active } =
+    req.body;
 
   try {
     const existingEmployee = await Employee.findOne({ email });
@@ -20,6 +21,7 @@ export const register = async (req, res) => {
       phone,
       role,
       password: hashedPassword,
+      active: typeof active === "boolean" ? active : true, // Default to true if not specified
     });
 
     await newEmployee.save();
@@ -39,6 +41,13 @@ export const login = async (req, res) => {
     const employee = await Employee.findOne({ email });
     if (!employee) {
       return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Check if the account is active
+    if (!employee.active) {
+      return res.status(403).json({
+        message: "Account is inactive. Please contact an administrator.",
+      });
     }
 
     const isMatch = await bcrypt.compare(password, employee.password);
@@ -63,6 +72,7 @@ export const login = async (req, res) => {
     res.cookie("sessionId", sessionId, {
       httpOnly: true, // Helps prevent XSS attacks
       secure: process.env.NODE_ENV === "production", // Set to true for HTTPS in production
+      sameSite: "none", //remove after the domain name.
       maxAge: 1000 * 60 * 60 * 24, // Cookie expiration time (e.g., 1 day)
     });
 

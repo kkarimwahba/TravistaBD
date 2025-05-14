@@ -4,6 +4,7 @@ const {
   getEmployeeById,
   updateEmployee,
   deleteEmployee,
+  toggleEmployeeStatus,
 } = require("../controllers/employeeController.js");
 
 // const {
@@ -17,5 +18,6 @@ router.get("/", getAllEmployees);
 router.get("/:id", getEmployeeById);
 router.put("/:id", updateEmployee);
 router.delete("/:id", deleteEmployee);
+router.patch("/:id/toggle-status", toggleEmployeeStatus);
 
 module.exports = router; // Use module.exports for CommonJS

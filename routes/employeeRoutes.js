@@ -6,16 +6,16 @@ const {
   deleteEmployee,
 } = require("../controllers/employeeController.js");
 
-const {
-  isAuthenticated,
-  authorizeRoles,
-} = require("../middleware/employeeAuthMiddleware.js");
+// const {
+//   isAuthenticated,
+//   authorizeRoles,
+// } = require("../middleware/employeeAuthMiddleware.js");
 
 const router = express.Router();
 
-router.get("/", isAuthenticated, getAllEmployees);
-router.get("/:id", isAuthenticated, getEmployeeById);
-router.put("/:id", isAuthenticated, updateEmployee);
-router.delete("/:id", isAuthenticated, deleteEmployee);
+router.get("/", getAllEmployees);
+router.get("/:id", getEmployeeById);
+router.put("/:id", updateEmployee);
+router.delete("/:id", deleteEmployee);
 
 module.exports = router; // Use module.exports for CommonJS

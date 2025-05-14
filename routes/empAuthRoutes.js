@@ -11,7 +11,7 @@ router.post("/register", register);
 router.post("/login", login);
 
 // Logout route (must be authenticated)
-router.post("/logout", isAuthenticated, logout);
+router.post("/logout", logout);
 router.get("/session", (req, res) => {
   if (req.session && req.session.employee) {
     return res.status(200).json({ employee: req.session.employee });

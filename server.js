@@ -39,7 +39,7 @@ app.use(
     }),
     cookie: {
       httpOnly: true,
-      secure: true, //process.env.NODE_ENV === "production", // true for HTTPS in production
+      secure: process.env.NODE_ENV === "production", // true for HTTPS in production
       maxAge: 1000 * 60 * 60 * 24, // Cookie expiration time (1 day)
     },
   })

@@ -4,7 +4,6 @@ const {
   getEmployeeById,
   updateEmployee,
   deleteEmployee,
-  toggleEmployeeStatus, // Add the new controller function
 } = require("../controllers/employeeController.js");
 
 const {
@@ -14,16 +13,9 @@ const {
 
 const router = express.Router();
 
-router.get("/", isAuthenticated, authorizeRoles("admin"), getAllEmployees);
-router.get("/:id", isAuthenticated, authorizeRoles("admin"), getEmployeeById);
-router.put("/:id", isAuthenticated, authorizeRoles("admin"), updateEmployee);
-router.delete("/:id", isAuthenticated, authorizeRoles("admin"), deleteEmployee);
-// Add the new route for toggling employee status
-router.patch(
-  "/:id/toggle-status",
-  isAuthenticated,
-  authorizeRoles("admin"),
-  toggleEmployeeStatus
-);
+router.get("/", isAuthenticated, getAllEmployees);
+router.get("/:id", isAuthenticated, getEmployeeById);
+router.put("/:id", isAuthenticated, updateEmployee);
+router.delete("/:id", isAuthenticated, deleteEmployee);
 
 module.exports = router; // Use module.exports for CommonJS

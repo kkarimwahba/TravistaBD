@@ -1,12 +1,18 @@
 // controllers/buildPackageController.js
 
 const BuildPackage = require("../models/buildPackage");
+const Notification = require("../models/notification");
 
 // CREATE
 exports.createPackageRequest = async (req, res) => {
   try {
     const newRequest = new BuildPackage(req.body);
     const savedRequest = await newRequest.save();
+    const notification = new Notification({
+      type: "Build-My-Package",
+      description: `New build package request from ${savedRequest.firstName} ${savedRequest.lastName}. A ${savedRequest.type} package is needed.`,
+    });
+    await notification.save();
     res.status(201).json(savedRequest);
   } catch (err) {
     res.status(400).json({ error: err.message });

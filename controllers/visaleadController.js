@@ -1,4 +1,5 @@
 const VisaLead = require("../models/visalead");
+const Notification = require("../models/notification");
 
 // Create a new visa application
 exports.createVisaApplication = async (req, res) => {
@@ -38,6 +39,11 @@ exports.createVisaApplication = async (req, res) => {
     });
 
     await newApplication.save();
+    const notification = new Notification({
+      type: "Visa Lead",
+      description: `New visa application from ${newApplication.firstName} ${newApplication.lastName}. Country: ${newApplication.country}. Purpose: ${newApplication.purpose}`,
+    });
+    await notification.save();
     res.status(201).json({
       message: "Visa application submitted successfully",
       data: newApplication,

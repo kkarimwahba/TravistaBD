@@ -1,5 +1,6 @@
 // controllers/commentController.js
 const Comment = require("../models/comments");
+const Notification = require("../models/notification");
 
 // Get all comments (for admin)
 exports.getAllComments = async (req, res) => {
@@ -35,6 +36,11 @@ exports.createComment = async (req, res) => {
   try {
     const newComment = await comment.save();
     res.status(201).json(newComment);
+    const notification = new Notification({
+      type: "Comment",
+      description: `New comment from ${newComment.author} on the home page. Comment: ${newComment.content}`,
+    });
+    await notification.save();
   } catch (err) {
     console.error(err);
     res.status(400).json({ message: err.message });

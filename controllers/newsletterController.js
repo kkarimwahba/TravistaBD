@@ -1,4 +1,5 @@
 const Newsletter = require("../models/newsletter");
+const Notification = require("../models/notification");
 
 // Subscribe a new user
 const subscribeNewsletter = async (req, res) => {
@@ -15,6 +16,11 @@ const subscribeNewsletter = async (req, res) => {
 
     const newSubscription = new Newsletter({ email });
     await newSubscription.save();
+    const notification = new Notification({
+      type: "Newsletter",
+      description: `New newsletter subscription from ${newSubscription.email}`,
+    });
+    await notification.save();
 
     res.status(201).json({
       message: "Subscribed successfully",

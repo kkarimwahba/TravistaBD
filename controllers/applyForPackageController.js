@@ -1,4 +1,5 @@
 const ApplyForPackage = require("../models/applyForPackage");
+const Notification = require("../models/notification");
 
 // Create new application
 exports.createApplication = async (req, res) => {
@@ -9,6 +10,11 @@ exports.createApplication = async (req, res) => {
     });
 
     await application.save();
+    const notification = new Notification({
+      type: "Apply For Package",
+      description: `New application from ${application.firstName} ${application.lastName} for package ${application.packageId}- ${application.packageName}.`,
+    });
+    await notification.save();
     res.status(201).json({
       success: true,
       data: application,

@@ -1,4 +1,5 @@
 const Form = require("../models/formsLeads");
+const Notification = require("../models/notification");
 
 // Create a new form entry
 exports.createForm = async (req, res) => {
@@ -29,6 +30,11 @@ exports.createForm = async (req, res) => {
       agreedToTerms,
     });
     await newForm.save();
+    const notification = new Notification({
+      type: `New ${type} Form-Lead`,
+      description: `New form lead from ${newForm.firstName} ${newForm.lastName}. Type: ${newForm.type}. Subject: ${newForm.subject}`,
+    });
+    await notification.save();
 
     res.status(201).json({ message: "Form submitted successfully", newForm });
   } catch (error) {

@@ -9,6 +9,28 @@ const addSocialMedia = async (req, res) => {
       return res.status(400).json({ message: "Platform and URL are required" });
     }
 
+    // Check if a similar URL already exists in the database
+    const existingLink = await SocialMedia.findOne({
+      url: { $regex: new RegExp(url, "i") }, // Case-insensitive search
+    });
+
+    if (existingLink) {
+      return res.status(400).json({
+        message: "A similar social media link already exists in the database",
+      });
+    }
+
+    // Check if the same platform already exists
+    const existingPlatform = await SocialMedia.findOne({
+      platform: { $regex: new RegExp(`^${platform}$`, "i") }, // Exact match but case-insensitive
+    });
+
+    if (existingPlatform) {
+      return res.status(400).json({
+        message: `A link for ${platform} already exists. Please update the existing link instead.`,
+      });
+    }
+
     const newSocial = new SocialMedia({ platform, url });
     await newSocial.save();
 

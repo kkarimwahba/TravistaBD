@@ -4,6 +4,8 @@ const Notification = require("../models/notification");
 // Create a new visa application
 exports.createVisaApplication = async (req, res) => {
   try {
+    console.log("Received form data:", req.body);
+    console.log("Received files:", req.files);
     // Destructure known fields from req.body
     const {
       userId,

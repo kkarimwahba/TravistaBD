@@ -21,6 +21,9 @@ exports.createVisaApplication = async (req, res) => {
     } = req.body;
 
     const userIdToUse = userId ? userId : null;
+    const additionalFiles = req.files
+      ? req.files.map((file) => file.filename)
+      : [];
 
     const newApplication = new VisaLead({
       userId: userIdToUse,
@@ -36,6 +39,7 @@ exports.createVisaApplication = async (req, res) => {
       visaRenewal,
       bankStatement,
       agreedToTerms,
+      additionalFiles, // <-- Save file names to schema
     });
 
     await newApplication.save();

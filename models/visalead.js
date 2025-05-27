@@ -28,6 +28,7 @@ const VisaLeadSchema = new mongoose.Schema(
     jobStatus: { type: String, required: true },
     visaRenewal: { type: String, enum: ["Yes", "No"], required: true },
     bankStatement: { type: String, enum: ["Yes", "No"], required: true }, // no File URL would be a yes or no
+    additionalFiles: [{ type: String }], // array of file paths or URL
     agreedToTerms: { type: Boolean, required: true },
     status: {
       type: String,

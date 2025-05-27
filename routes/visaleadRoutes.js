@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // CRUD routes
-router.post("/", upload.single("bankStatement"), createVisaApplication);
+router.post("/", upload.array("additionalFiles", 10), createVisaApplication);
 router.get("/", getAllVisaApplications);
 router.get("/:id", getVisaApplicationById);
 router.get("/user/:userId", getVisaApplicationsByUser);

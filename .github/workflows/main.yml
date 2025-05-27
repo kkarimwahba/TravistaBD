@@ -3,7 +3,7 @@ name: Auto Deploy on Push
 on:
   push:
     branches:
-      - master  # You can change this to 'master' or any branch you want to trigger deployment
+      - master  # Change to your deployment branch if different
 
 jobs:
   deploy:
@@ -13,11 +13,12 @@ jobs:
       - name: Install sshpass
         run: sudo apt-get update && sudo apt-get install -y sshpass
 
-      - name: Deploy to root@158.220.96.121
+      - name: Deploy to Server
         env:
           SSHPASS: ${{ secrets.SSH_PASSWORD }}
         run: |
           sshpass -e ssh -o StrictHostKeyChecking=no root@158.220.96.121 << 'EOF'
+            source ~/.bashrc
             cd Travista/TravistaBD
             git pull
             pm2 reload server

@@ -1,27 +1,24 @@
-name: Deploy to Server
+name: Auto Deploy on Push
 
 on:
   push:
     branches:
-      - main
+      - master  # You can change this to 'master' or any branch you want to trigger deployment
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Install sshpass
         run: sudo apt-get update && sudo apt-get install -y sshpass
 
-      - name: Deploy over SSH with Password
+      - name: Deploy to root@158.220.96.121
         env:
           SSHPASS: ${{ secrets.SSH_PASSWORD }}
         run: |
-          sshpass -e ssh -o StrictHostKeyChecking=no root@158.220.96.121 "
-            cd Travista/TravistaBD &&
-            git pull &&
+          sshpass -e ssh -o StrictHostKeyChecking=no root@158.220.96.121 << 'EOF'
+            cd Travista/TravistaBD
+            git pull
             pm2 reload server
-          "
+          EOF

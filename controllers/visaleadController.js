@@ -18,6 +18,7 @@ exports.createVisaApplication = async (req, res) => {
       bankStatement,
       visaRenewal,
       agreedToTerms,
+      visaType,
     } = req.body;
 
     const userIdToUse = userId ? userId : null;
@@ -39,6 +40,7 @@ exports.createVisaApplication = async (req, res) => {
       visaRenewal,
       bankStatement,
       agreedToTerms,
+      visaType,
       additionalFiles, // <-- Save file names to schema
     });
 

@@ -7,6 +7,7 @@ const faqSchema = new mongoose.Schema(
     question: { type: String, required: true },
     answer: { type: String, required: true },
     subject: { type: String, required: true }, // Subject category
+    isVisible: { type: Boolean, default: true }, // Controls visibility on frontend
   },
   { timestamps: true }
 );

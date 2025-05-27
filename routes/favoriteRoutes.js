@@ -1,19 +1,11 @@
+// routes/favoriteRoutes.js
 const express = require("express");
-const {
-  addFavorite,
-  getUserFavorites,
-  checkFavorite,
-  removeFavorite,
-  getAllFavorites,
-} = require("../controllers/favoriteController");
-
 const router = express.Router();
+const favoriteController = require("../controllers/favoriteController");
 
-// Add authentication middleware to protect these routes
-router.post("/", addFavorite);
-router.get("/user/:userId", getUserFavorites);
-router.get("/check/:userId/:itemType/:itemId", checkFavorite);
-router.delete("/:userId/:itemType/:itemId", removeFavorite);
-router.get("/", getAllFavorites); // Admin route
+router.post("/", favoriteController.addFavorite);
+router.delete("/remove", favoriteController.removeFavorite);
+router.get("/my", favoriteController.getMyFavorites);
+router.get("/packages", favoriteController.getFavoritedPackages);
 
 module.exports = router;

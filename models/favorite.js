@@ -7,10 +7,24 @@ const favoriteSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    itemType: {
+      type: String,
+      enum: ["package", "blog"],
+      required: true,
+    },
     package: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Package",
-      required: true,
+      required: function () {
+        return this.itemType === "package";
+      },
+    },
+    blog: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "BlogPost",
+      required: function () {
+        return this.itemType === "blog";
+      },
     },
     createdAt: {
       type: Date,
@@ -21,6 +35,13 @@ const favoriteSchema = new mongoose.Schema(
 );
 
 // Compound index to prevent duplicate favorites
-favoriteSchema.index({ user: 1, package: 1 }, { unique: true });
+favoriteSchema.index(
+  { user: 1, itemType: 1, package: 1 },
+  { unique: true, sparse: true }
+);
+favoriteSchema.index(
+  { user: 1, itemType: 1, blog: 1 },
+  { unique: true, sparse: true }
+);
 
 module.exports = mongoose.model("Favorite", favoriteSchema);

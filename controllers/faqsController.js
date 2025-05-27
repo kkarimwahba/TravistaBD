@@ -102,4 +102,6 @@ module.exports = {
   getFAQById,
   updateFAQ,
   deleteFAQ,
+  toggleFAQVisibility,
+  getVisibleFAQs,
 };

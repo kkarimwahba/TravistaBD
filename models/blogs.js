@@ -9,6 +9,7 @@ const blogPostSchema = new mongoose.Schema({
   featuredImage: { type: String }, // Main image on top of the blog post
   embeddedImages: { type: String }, // Optional: to track embedded image URLs if you want
   seoKeywords: [{ type: String }],
+  metaDescription: { type: String, maxlength: 160 }, // For SEO meta description
   category: { type: String, enum: ["stories", "news", "guide"] },
   tags: [{ type: String }], // Change from ObjectId to String
   status: {

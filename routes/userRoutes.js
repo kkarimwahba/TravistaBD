@@ -9,16 +9,11 @@ const {
   getUsers,
 } = require("../controllers/userController");
 const authMiddleware = require("../middleware/authMiddleware");
+const User = require("../models/user");
 
 const router = express.Router();
 
 router.get("/", getUsers); // Get all users
-router.get("/:id", getUserById); // Get user by ID
-router.put("/:id", updateUser); // Update user
-router.delete("/:id", deleteUser); // Delete user
-router.post("/session", loginWithSession); // Login with session
-router.post("/logout", logoutUser); // Logout
-router.post("/login", loginUser); // Login
 // Get current logged-in user
 router.get("/me", async (req, res) => {
   try {
@@ -32,4 +27,11 @@ router.get("/me", async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 });
+router.get("/:id", getUserById); // Get user by ID
+router.put("/:id", updateUser); // Update user
+router.delete("/:id", deleteUser); // Delete user
+router.post("/session", loginWithSession); // Login with session
+router.post("/logout", logoutUser); // Logout
+router.post("/login", loginUser); // Login
+
 module.exports = router;

@@ -67,10 +67,41 @@ const deleteFAQ = async (req, res) => {
   }
 };
 
+// Toggle FAQ visibility
+const toggleFAQVisibility = async (req, res) => {
+  try {
+    const faq = await FAQ.findOne({ faqId: req.params.id });
+
+    if (!faq) return res.status(404).json({ message: "FAQ not found" });
+
+    faq.isVisible = !faq.isVisible;
+    await faq.save();
+
+    res.status(200).json({
+      message: `FAQ visibility ${faq.isVisible ? "enabled" : "disabled"}`,
+      faq,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// Get all visible FAQs (for frontend)
+const getVisibleFAQs = async (req, res) => {
+  try {
+    const faqs = await FAQ.find({ isVisible: true }).sort({ faqId: 1 });
+    res.status(200).json(faqs);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch visible FAQs", error });
+  }
+};
+
 module.exports = {
   createFAQ,
   getAllFAQs,
   getFAQById,
   updateFAQ,
   deleteFAQ,
+  toggleFAQVisibility,
+  getVisibleFAQs,
 };

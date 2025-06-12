@@ -74,6 +74,8 @@ const applyForPackageRoutes = require("./routes/applyForPackageRoutes");
 const visaDocumentRoutes = require("./routes/visaDocumentRoutes");
 const buildPackageRoutes = require("./routes/buildPackageRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const favoriteRoutes = require("./routes/favoriteRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 // Register routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -103,7 +105,8 @@ app.use("/api", packagesRouter);
 app.use("/api/visa-leads", visaLeadRoutes);
 app.use("/api/build-packages", buildPackageRoutes);
 app.use("/api/notifications", notificationRoutes);
-
+app.use("/api/favorites", favoriteRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 // Root routess
 app.get("/", (req, res) => {
   res.send("API is running...");

@@ -13,6 +13,7 @@ const buildPackageSchema = new mongoose.Schema(
     departureCity: { type: String, required: true },
     numberOfTravellers: { type: Number, required: true },
     budgetPerPerson: { type: Number, required: true },
+    currency: { type: String, required: true },
     travelDate: { type: Date, required: true },
     flexibility: { type: Number, required: true }, // in days
     numberOfNights: { type: Number, required: true },

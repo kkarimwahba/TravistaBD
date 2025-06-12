@@ -4,6 +4,9 @@ const Notification = require("../models/notification");
 // Create a new visa application
 exports.createVisaApplication = async (req, res) => {
   try {
+    console.log("Received form data:", req.body);
+    console.log("Received files:", req.files);
+    // Destructure known fields from req.body
     const {
       userId,
       firstName,
@@ -12,18 +15,28 @@ exports.createVisaApplication = async (req, res) => {
       country,
       purpose,
       invitation,
-      schengenBefore,
+      schengenBefore: rawSchengenBefore,
       travelDate,
       jobStatus,
       bankStatement,
       visaRenewal,
-      agreedToTerms,
+      agreedToTerms: rawAgreedToTerms,
+      visaType,
     } = req.body;
 
-    const userIdToUse = userId ? userId : null;
+    // Parse booleans and enums properly
+    const agreedToTerms = rawAgreedToTerms === "true";
+
+    const schengenBefore = ["Yes", "No"].includes(rawSchengenBefore)
+      ? rawSchengenBefore
+      : "No"; // fallback if "N/A" or invalid
+
+    const additionalFiles = req.files
+      ? req.files.map((file) => file.filename)
+      : [];
 
     const newApplication = new VisaLead({
-      userId: userIdToUse,
+      userId: userId || null,
       firstName,
       lastName,
       phoneNumber,
@@ -36,14 +49,19 @@ exports.createVisaApplication = async (req, res) => {
       visaRenewal,
       bankStatement,
       agreedToTerms,
+      visaType,
+      additionalFiles,
     });
 
     await newApplication.save();
+
     const notification = new Notification({
       type: "Visa Lead",
       description: `New visa application from ${newApplication.firstName} ${newApplication.lastName}. Country: ${newApplication.country}. Purpose: ${newApplication.purpose}`,
     });
+
     await notification.save();
+
     res.status(201).json({
       message: "Visa application submitted successfully",
       data: newApplication,

@@ -17,10 +17,24 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
 
-const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+  // Accept any kind of file and image
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "application/pdf",
+  ];
+  if (allowedTypes.includes(file.mimetype)) {
+    return cb(null, true);
+  }
+  cb(null, false);
+};
+
+const upload = multer({ storage, fileFilter });
 
 // CRUD routes
-router.post("/", upload.single("bankStatement"), createVisaApplication);
+router.post("/", upload.array("additionalFiles", 10), createVisaApplication);
 router.get("/", getAllVisaApplications);
 router.get("/:id", getVisaApplicationById);
 router.get("/user/:userId", getVisaApplicationsByUser);

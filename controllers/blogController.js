@@ -1,12 +1,17 @@
 // controllers/blogController.js
 const Blog = require("../models/blogs");
-
+const slugify = (str) =>
+  str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-");
 exports.createPost = async (req, res) => {
   try {
     const {
       title,
       subTitle,
-      slug,
+      slug: incomingSlug,
       contentTitle,
       content,
       category,
@@ -14,8 +19,10 @@ exports.createPost = async (req, res) => {
       status,
       scheduledDate,
       seoKeywords,
+      metaDescription, // <-- Add this
     } = req.body;
-
+    // Use incoming slug or generate one from the title
+    const slug = incomingSlug || slugify(title);
     const featuredImage = req.files?.featuredImage?.[0]?.filename || "";
     const embeddedImages = req.files?.embeddedImages?.[0]?.filename || "";
     // const embeddedImages =
@@ -34,6 +41,7 @@ exports.createPost = async (req, res) => {
       status,
       scheduledDate,
       seoKeywords: seoKeywords ? seoKeywords.split(",") : [],
+      metaDescription, // <-- Add this
     });
 
     await blog.save();
@@ -76,6 +84,7 @@ exports.updatePost = async (req, res) => {
       status,
       scheduledDate,
       seoKeywords,
+      metaDescription, // <-- Add this
     } = req.body;
 
     const update = {
@@ -89,6 +98,8 @@ exports.updatePost = async (req, res) => {
       status,
       scheduledDate,
       seoKeywords: seoKeywords ? seoKeywords.split(",") : [],
+      metaDescription, // <-- Add this
+
       updatedAt: new Date(),
     };
 

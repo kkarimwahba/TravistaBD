@@ -21,5 +21,7 @@ const favoriteSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+// Add unique index on userId + itemId + itemType
+favoriteSchema.index({ userId: 1, itemId: 1, itemType: 1 }, { unique: true });
 
 module.exports = mongoose.model("Favorite", favoriteSchema);

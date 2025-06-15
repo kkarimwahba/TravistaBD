@@ -1,6 +1,8 @@
 // controllers/authController.js
 import Employee from "../models/employees.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import generateToken from "../utils/empGenerateToken.js";
 
 export const register = async (req, res) => {
   const { email, username, empId, name, phone, password, role, active } =
@@ -43,7 +45,6 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Check if the account is active
     if (!employee.active) {
       return res.status(403).json({
         message: "Account is inactive. Please contact an administrator.",
@@ -55,40 +56,30 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate session ID and store it in the session object
-    const sessionId = req.sessionID;
-
-    req.session.employee = {
-      id: employee._id,
-      role: employee.role,
-      email: employee.email,
-      name: employee.name,
-      empId: employee.empId,
-      phone: employee.phone,
-      username: employee.username,
-    };
-
-    // Set cookie with session ID
-    res.cookie("sessionId", sessionId, {
-      httpOnly: true, // Helps prevent XSS attacks
-      secure: process.env.NODE_ENV === "production", // Set to true for HTTPS in production
-      sameSite: "none", //remove after the domain name.
-      maxAge: 1000 * 60 * 60 * 24, // Cookie expiration time (e.g., 1 day)
-    });
-
     const now = new Date();
     employee.loginTime = now;
     await employee.save();
 
+    const token = generateToken(employee);
+
     res.status(200).json({
       message: "Login successful",
-      employee: req.session.employee,
+      token,
+      employee: {
+        id: employee._id,
+        role: employee.role,
+        email: employee.email,
+        name: employee.name,
+        empId: employee.empId,
+        phone: employee.phone,
+        username: employee.username,
+        active: employee.active,
+      },
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-
 export const logout = async (req, res) => {
   try {
     const employee = await Employee.findById(req.session.employee.id);

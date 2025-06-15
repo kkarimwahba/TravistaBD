@@ -1,6 +1,7 @@
 const express = require("express");
 const { register, login, logout } = require("../controllers/empAuthController");
-const { isAuthenticated } = require("../middleware/employeeAuthMiddleware");
+// const { isAuthenticated } = require("../middleware/employeeAuthMiddleware");
+const { verifyEmployeeToken } = require("../middleware/verifyEmployeeToken.js");
 
 const router = express.Router();
 
@@ -12,11 +13,8 @@ router.post("/login", login);
 
 // Logout route (must be authenticated)
 router.post("/logout", logout);
-router.get("/session", (req, res) => {
-  if (req.session && req.session.employee) {
-    return res.status(200).json({ employee: req.session.employee });
-  }
-  res.status(401).json({ message: "Not authenticated" });
+router.get("/session", verifyEmployeeToken, (req, res) => {
+  res.status(200).json({ employee: req.employee });
 });
 
 module.exports = router;

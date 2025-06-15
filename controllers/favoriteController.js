@@ -9,8 +9,11 @@ exports.addFavorite = async (req, res) => {
   const { itemId, itemType } = req.body;
   const userId = req.user._id;
 
+  console.log("Adding favorite for user:", userId);
+  console.log("Item ID:", itemId);
+  console.log("Item Type:", itemType);
+
   try {
-    // Prevent duplicates
     const existing = await Favorite.findOne({ userId, itemId, itemType });
     if (existing) {
       return res.status(400).json({ message: "Already favorited." });
@@ -19,7 +22,8 @@ exports.addFavorite = async (req, res) => {
     const favorite = await Favorite.create({ userId, itemId, itemType });
     res.status(201).json(favorite);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("❌ Error in addFavorite:", err);
+    res.status(500).json({ message: "Failed to add favorite." });
   }
 };
 

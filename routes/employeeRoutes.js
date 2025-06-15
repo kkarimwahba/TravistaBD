@@ -1,3 +1,4 @@
+// routes/employeeRoutes.js
 const express = require("express");
 const {
   getAllEmployees,
@@ -7,17 +8,38 @@ const {
   toggleEmployeeStatus,
 } = require("../controllers/employeeController.js");
 
-// const {
-//   isAuthenticated,
-//   authorizeRoles,
-// } = require("../middleware/employeeAuthMiddleware.js");
+const {
+  verifyEmployeeToken,
+  authorizeRoles,
+} = require("../middleware/verifyEmployeeToken.js");
 
 const router = express.Router();
 
-router.get("/", getAllEmployees);
-router.get("/:id", getEmployeeById);
-router.put("/:id", updateEmployee);
-router.delete("/:id", deleteEmployee);
-router.patch("/:id/toggle-status", toggleEmployeeStatus);
+// Apply protection per route for clarity and flexibility
+router.get("/", verifyEmployeeToken, authorizeRoles("admin"), getAllEmployees);
+router.get(
+  "/:id",
+  verifyEmployeeToken,
+  authorizeRoles("admin"),
+  getEmployeeById
+);
+router.put(
+  "/:id",
+  verifyEmployeeToken,
+  authorizeRoles("admin"),
+  updateEmployee
+);
+router.delete(
+  "/:id",
+  verifyEmployeeToken,
+  authorizeRoles("admin"),
+  deleteEmployee
+);
+router.patch(
+  "/:id/toggle-status",
+  verifyEmployeeToken,
+  authorizeRoles("admin"),
+  toggleEmployeeStatus
+);
 
-module.exports = router; // Use module.exports for CommonJS
+module.exports = router;

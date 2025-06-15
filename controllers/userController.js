@@ -218,7 +218,12 @@ exports.loginUser = async (req, res) => {
 
     res.json({
       _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
+      phoneNumber: user.phoneNumber,
+      birthDate: user.birthDate,
+      role: user.role,
       token: generateToken(user._id, user.role),
     });
   } catch (err) {

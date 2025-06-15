@@ -14,11 +14,6 @@ exports.addFavorite = async (req, res) => {
   console.log("Item Type:", itemType);
 
   try {
-    const existing = await Favorite.findOne({ userId, itemId, itemType });
-    if (existing) {
-      return res.status(400).json({ message: "Already favorited." });
-    }
-
     const favorite = await Favorite.create({ userId, itemId, itemType });
     res.status(201).json(favorite);
   } catch (err) {

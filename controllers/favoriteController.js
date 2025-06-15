@@ -52,40 +52,38 @@ exports.getMyFavorites = async (req, res) => {
   try {
     const favorites = await Favorite.find({ userId });
 
-    // Separate itemIds by type
     const packageIds = favorites
-      .filter((f) => f.itemType === "package")
-      .map((f) => f.itemId);
+      .filter((fav) => fav.itemType === "package")
+      .map((fav) => fav.itemId);
 
     const blogIds = favorites
-      .filter((f) => f.itemType === "blog")
-      .map((f) => f.itemId);
+      .filter((fav) => fav.itemType === "blog")
+      .map((fav) => fav.itemId);
 
-    // Get full items
     const packages = await Package.find({ _id: { $in: packageIds } });
     const blogs = await Blog.find({ _id: { $in: blogIds } });
 
-    // Map enriched favorites
     const enrichedFavorites = favorites.map((fav) => {
-      let item = null;
-      if (fav.itemType === "package") {
-        item = packages.find((p) => p._id.toString() === fav.itemId.toString());
-      } else {
-        item = blogs.find((b) => b._id.toString() === fav.itemId.toString());
-      }
+      const item =
+        fav.itemType === "package"
+          ? packages.find((p) => p._id.toString() === fav.itemId.toString())
+          : blogs.find((b) => b._id.toString() === fav.itemId.toString());
+
       return {
-        ...fav.toObject(),
-        item,
+        _id: fav._id,
+        itemType: fav.itemType,
+        itemId: fav.itemId,
+        createdAt: fav.createdAt,
+        item, // this will contain full blog or package object
       };
     });
 
     res.json(enrichedFavorites);
-  } catch (err) {
-    console.error("❌ Error in getMyFavorites:", err);
-    res.status(500).json({ message: "Failed to load favorites." });
+  } catch (error) {
+    console.error("❌ Error in getMyFavorites:", error);
+    res.status(500).json({ message: "Failed to fetch favorites." });
   }
 };
-
 // Get all favorited packages with user & package populated
 // controllers/favoriteController.js
 

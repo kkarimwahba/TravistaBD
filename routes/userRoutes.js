@@ -59,6 +59,6 @@ router.put("/profile", protect, updateUserProfile);
 router.delete("/profile", protect, deleteUserProfile);
 
 // Admin Routes
-router.get("/", protect, isAdmin, getAllUsers);
+router.get("/", isAdmin, getAllUsers);
 
 module.exports = router;

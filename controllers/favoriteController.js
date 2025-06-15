@@ -50,24 +50,39 @@ exports.getMyFavorites = async (req, res) => {
   const userId = req.user._id;
 
   try {
-    const favorites = await Favorite.find({ userId }).populate({
-      path: "itemId",
-      model: function (doc) {
-        // Dynamically choose model based on itemType
-        return doc.itemType === "package" ? "Package" : "Blog";
-      },
-      select: function (doc) {
-        if (doc.itemType === "package") {
-          return "packageName travistaId packagePicture packagePrice departureDate destinations";
-        } else {
-          return ""; // or 'title content' if needed for blogs
-        }
-      },
+    const favorites = await Favorite.find({ userId });
+
+    // Separate itemIds by type
+    const packageIds = favorites
+      .filter((f) => f.itemType === "package")
+      .map((f) => f.itemId);
+
+    const blogIds = favorites
+      .filter((f) => f.itemType === "blog")
+      .map((f) => f.itemId);
+
+    // Get full items
+    const packages = await Package.find({ _id: { $in: packageIds } });
+    const blogs = await Blog.find({ _id: { $in: blogIds } });
+
+    // Map enriched favorites
+    const enrichedFavorites = favorites.map((fav) => {
+      let item = null;
+      if (fav.itemType === "package") {
+        item = packages.find((p) => p._id.toString() === fav.itemId.toString());
+      } else {
+        item = blogs.find((b) => b._id.toString() === fav.itemId.toString());
+      }
+      return {
+        ...fav.toObject(),
+        item,
+      };
     });
 
-    res.json(favorites);
+    res.json(enrichedFavorites);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("❌ Error in getMyFavorites:", err);
+    res.status(500).json({ message: "Failed to load favorites." });
   }
 };
 

@@ -21,7 +21,6 @@ exports.createVisaApplication = async (req, res) => {
       bankStatement,
       visaRenewal,
       agreedToTerms: rawAgreedToTerms,
-      visaType,
     } = req.body;
 
     // Parse booleans and enums properly
@@ -49,7 +48,7 @@ exports.createVisaApplication = async (req, res) => {
       visaRenewal,
       bankStatement,
       agreedToTerms,
-      visaType,
+
       additionalFiles,
     });
 

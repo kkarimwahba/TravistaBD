@@ -22,7 +22,11 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(
   cors({
-    origin: "https://travistasl.com", // Frontend URL
+    origin: [
+      "https://travistasl.com", // main site
+      "https://www.travistasl.com", // main site
+      "https://travistasl.com/admin",
+    ], // admin dashboard // Frontend URL
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })

@@ -18,6 +18,8 @@ const fileFilter = (req, file, cb) => {
     "image/png",
     "image/gif",
     "application/pdf",
+    "image/webp", // Add more if needed
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .doc
   ];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);

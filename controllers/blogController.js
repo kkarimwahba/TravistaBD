@@ -84,7 +84,7 @@ exports.updatePost = async (req, res) => {
       status,
       scheduledDate,
       seoKeywords,
-      metaDescription, // <-- Add this
+      metaDescription,
     } = req.body;
 
     const update = {
@@ -94,29 +94,30 @@ exports.updatePost = async (req, res) => {
       contentTitle,
       content,
       category,
-      tags: tags ? tags.split(",") : [],
+      tags: typeof tags === "string" ? tags.split(",") : tags || [],
       status,
       scheduledDate,
-      seoKeywords: seoKeywords ? seoKeywords.split(",") : [],
-      metaDescription, // <-- Add this
-
+      seoKeywords:
+        typeof seoKeywords === "string"
+          ? seoKeywords.split(",")
+          : seoKeywords || [],
+      metaDescription,
       updatedAt: new Date(),
     };
 
-    if (req.files?.featuredImage?.[0]) {
+    if (req.files?.featuredImage?.length) {
       update.featuredImage = req.files.featuredImage[0].filename;
     }
-    if (req.files?.embeddedImages?.[0]) {
+
+    if (req.files?.embeddedImages?.length) {
       update.embeddedImages = req.files.embeddedImages[0].filename;
     }
-    // if (req.files?.embeddedImages?.length) {
-    //   update.embeddedImages = req.files.embeddedImages.map((f) => f.filename);
-    // }
 
-    const updated = await Blog.findByIdAndUpdate(req.params.id, update, {
+    const updatedPost = await Blog.findByIdAndUpdate(req.params.id, update, {
       new: true,
     });
-    res.status(200).json(updated);
+
+    res.status(200).json(updatedPost);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

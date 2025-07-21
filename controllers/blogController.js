@@ -42,10 +42,18 @@ exports.createPost = async (req, res) => {
       featuredImage,
       embeddedImages,
       category,
-      tags: tags ? tags.split(",") : [],
+      tags: Array.isArray(tags)
+        ? tags
+        : typeof tags === "string" && tags.length > 0
+        ? [tags]
+        : [],
       status,
       scheduledDate,
-      seoKeywords: seoKeywords ? seoKeywords.split(",") : [],
+      seoKeywords: Array.isArray(seoKeywords)
+        ? seoKeywords
+        : typeof seoKeywords === "string" && seoKeywords.length > 0
+        ? [seoKeywords]
+        : [],
       metaDescription, // <-- Add this
     });
 

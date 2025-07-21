@@ -27,8 +27,7 @@ exports.createPost = async (req, res) => {
     const slug = incomingSlug || slugify(title);
     const featuredImage = req.files?.featuredImage?.[0]?.filename || "";
 
-    const embeddedImages =
-      req.files?.embeddedImages?.map((f) => f.filename) || [];
+    const embeddedImages = req.files?.embeddedImages?.[0]?.filename || "";
 
     // const embeddedImages =
     //   req.files?.embeddedImages?.map((f) => f.filename) || [];

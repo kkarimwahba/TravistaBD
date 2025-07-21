@@ -84,6 +84,16 @@ exports.getPostById = async (req, res) => {
   }
 };
 
+exports.getPostBySlug = async (req, res) => {
+  try {
+    const post = await Blog.findOne({ slug: req.params.slug }).populate("tags");
+    if (!post) return res.status(404).json({ message: "Post not found" });
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 exports.updatePost = async (req, res) => {
   try {
     const {

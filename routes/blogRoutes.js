@@ -14,7 +14,9 @@ router.post(
 );
 
 router.get("/", blogController.getAllPosts);
+router.get("/slug/:slug", blogController.getPostBySlug);
 router.get("/:id", blogController.getPostById);
+
 router.put(
   "/:id",
   upload.fields([

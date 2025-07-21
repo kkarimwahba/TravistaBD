@@ -7,6 +7,8 @@ const slugify = (str) =>
     .replace(/[^\w\s-]/g, "")
     .replace(/\s+/g, "-");
 exports.createPost = async (req, res) => {
+  console.log("Received createPost request", req.body, req.files);
+
   try {
     const {
       title,
@@ -50,6 +52,7 @@ exports.createPost = async (req, res) => {
     await blog.save();
     res.status(201).json(blog);
   } catch (error) {
+    console.log(error);
     console.error(error);
     res.status(500).json({ message: error.message });
   }

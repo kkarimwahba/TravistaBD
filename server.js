@@ -80,6 +80,8 @@ const buildPackageRoutes = require("./routes/buildPackageRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const jobsRoutes = require("./routes/jobsRoutes");
+const jobRequestRoutes = require("./routes/jobRequestRoutes");
 // Register routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -111,6 +113,8 @@ app.use("/api/build-packages", buildPackageRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/favorites", favoriteRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/jobs", jobsRoutes);
+app.use("/api/job-requests", jobRequestRoutes);
 // Root routess
 app.get("/", (req, res) => {
   res.send("API is running...");

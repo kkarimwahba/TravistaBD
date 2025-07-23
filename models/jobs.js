@@ -12,6 +12,7 @@ const jobSchema = new mongoose.Schema(
     type: { type: String },
     preferredSkills: [{ type: String }],
     notes: [{ type: String }],
+    visible: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

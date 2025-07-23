@@ -55,3 +55,16 @@ exports.deleteJob = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Toggle job visibility
+exports.toggleJobVisibility = async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) return res.status(404).json({ error: "Job not found" });
+    job.visible = !job.visible;
+    await job.save();
+    res.json(job);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

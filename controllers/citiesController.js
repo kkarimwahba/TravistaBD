@@ -70,11 +70,8 @@ const updateCity = async (req, res) => {
     if (name) updateData.name = name;
     if (country) updateData.country = country;
 
-    // Convert cityId to number if coming from URL param
-    const cityId = Number(req.params.id);
-
-    const updatedCity = await City.findOneAndUpdate(
-      { cityId: cityId },
+    const updatedCity = await City.findByIdAndUpdate(
+      req.params.id, // Use the MongoDB _id directly
       updateData,
       { new: true, runValidators: true }
     ).populate("country", "name code");

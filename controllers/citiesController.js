@@ -60,17 +60,23 @@ const updateCity = async (req, res) => {
   try {
     const { name, country } = req.body;
 
-    // Check if the new country exists (if updating)
     if (country) {
       const existingCountry = await Country.findById(country);
       if (!existingCountry)
         return res.status(404).json({ message: "Country not found" });
     }
 
-    const updatedCity = await City.findByIdAndUpdate(
-      req.params.id, // ✅ Fixed incorrect field
-      req.body,
-      { new: true }
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (country) updateData.country = country;
+
+    // Convert cityId to number if coming from URL param
+    const cityId = Number(req.params.id);
+
+    const updatedCity = await City.findOneAndUpdate(
+      { cityId: cityId },
+      updateData,
+      { new: true, runValidators: true }
     ).populate("country", "name code");
 
     if (!updatedCity)
@@ -78,6 +84,7 @@ const updateCity = async (req, res) => {
 
     res.status(200).json({ message: "City updated successfully", updatedCity });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Failed to update city", error });
   }
 };
@@ -85,7 +92,7 @@ const updateCity = async (req, res) => {
 // 📌 Delete City
 const deleteCity = async (req, res) => {
   try {
-    const deletedCity = await City.findOneAndDelete({ cityId: req.params.id });
+    const deletedCity = await City.findByIdAndDelete(req.params.id);
     if (!deletedCity)
       return res.status(404).json({ message: "City not found" });
 
